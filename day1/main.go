@@ -1,21 +1,33 @@
 package main
 
 import (
+  "bufio"
   "fmt"
   "os"
-  "bufio"
+  "sort"
   "strconv"
 )
 
 func main() {
-  var sums []int
-  var currentSum int
-
   file, err := os.Open("input.txt")
   if err != nil {
     panic(err)
   }
   defer file.Close()
+
+  sums := parseInventories(file)
+
+  fmt.Println("Part 1")
+  fmt.Println("The largest sum is:", max(sums), "\n")
+
+  fmt.Println("Part 2")
+  fmt.Println("The three largest inventories are:", largestElements(sums, 3))
+  fmt.Println("The sum of the three largest inventories is:", sum(largestElements(sums, 3)))
+}
+
+func parseInventories(file *os.File) []int {
+  var sums []int
+  var currentSum int
 
   // Scan each line of the file
   // If the line is empty, we've hit the divider between two inventories, and should add the current sum to the list of inventory sums, and reset the current sum to 0
@@ -32,8 +44,26 @@ func main() {
     }
   }
 
-  // When finished with the above loop, the sums of each inventory will be in a list and we just have to get the largest value from it
-  fmt.Println("The largest sum is:", max(sums))
+  // Since the sum is only added when a blank line is found, the last sum won't get added in the loop above, add it here
+  sums = append(sums, currentSum)
+
+  return sums
+}
+
+// Returns the N largest values from a list of integers
+func largestElements(elements []int, amount int) []int {
+  sort.Ints(elements)
+  return elements[len(elements)-amount:]
+}
+
+func sum(elements []int) int {
+  sum := 0
+
+  for i := range elements {
+    sum += elements[i]
+  }
+
+  return sum
 }
 
 // Returns the largest value from a list of integers
