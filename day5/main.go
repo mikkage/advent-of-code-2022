@@ -48,6 +48,37 @@ func main() {
   fmt.Println("Result:", result, "\n")
 
   fmt.Println("Part 2")
+  stacks, instructions = readInput("input.txt")
+  result = ""
+
+  for i := range instructions {
+    // Instruction order is in the same order as in the input:
+    instruction := instructions[i]
+    amount := instruction[0]
+    sourceIndex := instruction[1]
+    destinationIndex := instruction[2]
+
+    // To move multiple crates at once, we need to get the elements between the top of the stack and
+    // the amount of boxes we want to move before that
+    stackHeight := len(stacks[sourceIndex])
+    moveElementIndex := stackHeight - amount
+
+    // Get the elements that will be moved by taking the slice from the lowest crate being moved to the top crate
+    topElements := stacks[sourceIndex][moveElementIndex:stackHeight]
+
+    // Remove the elements from the stack that we just copied
+    stacks[sourceIndex] = stacks[sourceIndex][:stackHeight - amount]
+
+    // Push the elements to the stack they're being moved to
+    stacks[destinationIndex] += topElements
+  }
+
+  for i := 1; i <= 9; i++ {
+    // Append the top item in the stack to the result
+    result += string(stacks[i][len(stacks[i]) - 1])
+  }
+
+  fmt.Println("Result:", result, "\n")
 }
 
 func readInput(filename string) (map[int]string, [][]int) {
