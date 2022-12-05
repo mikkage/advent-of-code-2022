@@ -31,7 +31,7 @@ func main() {
       stacks[sourceIndex] = stacks[sourceIndex][:topElementIndex]
 
       // Push the element to the stack it's being moved to
-      stacks[destinationIndex] = append(stacks[destinationIndex], topElement)
+      stacks[destinationIndex] += string(topElement)
     }
   }
 
@@ -41,7 +41,7 @@ func main() {
   // Need to iterate from 1 to 9 to get the crates in the correct order
   for i := 1; i <= 9; i++ {
     // Append the top item in the stack to the result
-    result += stacks[i][len(stacks[i]) - 1]
+    result += string(stacks[i][len(stacks[i]) - 1])
   }
 
   fmt.Println("Part 1")
@@ -50,7 +50,7 @@ func main() {
   fmt.Println("Part 2")
 }
 
-func readInput(filename string) (map[int][]string, [][]int) {
+func readInput(filename string) (map[int]string, [][]int) {
   file, err := os.Open(filename)
   if err != nil {
     panic(err)
@@ -100,7 +100,7 @@ func readInput(filename string) (map[int][]string, [][]int) {
     revCrates = append(revCrates, crates[i])
   }
 
-  stacks := make(map[int][]string)
+  stacks := make(map[int]string)
 
   for i := range revCrates {
     // Iterate over four characters of the string at a time
@@ -119,7 +119,7 @@ func readInput(filename string) (map[int][]string, [][]int) {
       stackIndex := (j + 4) / 4
 
       // We can finally push the crate to the top of the stack it belongs to
-      stacks[stackIndex] = append(stacks[stackIndex], string(revCrates[i][j+1]))
+      stacks[stackIndex] += string(revCrates[i][j+1])
     }
   }
 
