@@ -12,17 +12,16 @@ import (
 func main() {
   instructions := readInput("input.txt")
 
-  // Use a silly size for the grid since we don't know how far it'll travel
-  const gridSize = 3000
-  var grid [gridSize][gridSize]bool
+  grid := make(map[int]map[int]bool)
 
   // Start with the head and tail in the middle of the grid
-  startLocation := gridSize / 2
+  startLocation := 0
   headX := startLocation
   headY := startLocation
   tailX := startLocation
   tailY := startLocation
   // The starting location counts as somnewhere that the tail has visited
+  grid[startLocation] = make(map[int]bool)
   grid[startLocation][startLocation] = true
 
   for i := range instructions {
@@ -65,17 +64,20 @@ func main() {
       }
 
       // Mark the current position of the tail, whether it moved or not this iteration as visited
-      grid[tailY][tailX] = true
+      // Need to initialize a new map if there's nothing at the current index
+      if grid[tailX] == nil {
+        grid[tailX] = make(map[int]bool)
+      }
+      grid[tailX][tailY] = true
+
     }
   }
 
   totalVisited := 0
-  for i := 0; i < gridSize; i++ {
-    for j := 0; j < gridSize; j++ {
-      if grid[i][j] {
-        totalVisited += 1
-      }
-    }
+  for k, _ := range grid {
+    // Entries are only ever added to the map as true, so the number of entries is the
+    // number of nodes visited
+    totalVisited += len(grid[k])
   }
 
   fmt.Println("Part 1:", totalVisited)
